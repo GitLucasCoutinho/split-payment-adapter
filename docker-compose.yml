@@ -67,3 +67,14 @@ services:
     depends_on:
       kafka:
         condition: service_healthy
+
+  carga-simulator:
+    build: ./carga-simulator
+    container_name: split-carga-simulator
+    ports:
+      - "8084:8084"
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:19092
+    depends_on:
+      kafka:
+        condition: service_healthy

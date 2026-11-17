@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: carga-simulator
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        # O consumidor usa o proprio modelo, entao o produtor nao manda a classe.
+        spring.json.add.type.headers: false
+    template:
+      observation-enabled: true
+
+carga:
+  topico: pagamento.liquidado.v1
+
+server:
+  port: 8084
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus

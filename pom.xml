@@ -28,6 +28,7 @@
         <module>split-service</module>
         <module>spi-envio-service</module>
         <module>spi-simulator</module>
+        <module>carga-simulator</module>
     </modules>
 
     <build>

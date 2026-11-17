@@ -20,6 +20,8 @@ services:
       ES_JAVA_OPTS: "-Xms512m -Xmx512m"
     ports:
       - "9200:9200"
+    volumes:
+      - elasticsearch-dados:/usr/share/elasticsearch/data
     healthcheck:
       test: ["CMD-SHELL", "curl -sf http://localhost:9200/_cluster/health || exit 1"]
       interval: 15s
@@ -61,3 +63,7 @@ services:
   spi-simulator:
     environment:
       LOGSTASH_HOST: logstash
+
+volumes:
+  # Sem volume, reiniciar o container apaga os logs indexados.
+  elasticsearch-dados:
