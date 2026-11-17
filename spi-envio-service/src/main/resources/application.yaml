@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: spi-envio-service
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: spi-envio-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "br.com.paymentslab.spienvio"
+        spring.json.value.default.type: br.com.paymentslab.spienvio.entrada.evento.SegregacaoCalculadaRecebida
+        # Ignora o header de tipo enviado pelo produtor. O consumidor usa o seu
+        # proprio modelo, entao o contrato nao depende da classe do outro servico.
+        spring.json.use.type.headers: false
+    # Producer usado apenas para publicar a mensagem morta no topico de erro.
+    # Precisa de serializador JSON: o valor e o objeto do evento, nao texto.
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: false
+    listener:
+      observation-enabled: true
+
+split:
+  kafka:
+    topico-segregacao: segregacao.calculada.v1
+  spi:
+    url: http://localhost:8083/spi/mensagens
+
+server:
+  port: 8082
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: ${spring.application.name}

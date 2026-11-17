@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: split-service
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: split-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "br.com.paymentslab.split"
+        spring.json.value.default.type: br.com.paymentslab.split.dominio.model.PagamentoLiquidado
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        # Nao envia o nome da classe Java no header. O consumidor conhece o seu
+        # proprio tipo por configuracao, e o contrato nao vaza implementacao.
+        spring.json.add.type.headers: false
+    template:
+      observation-enabled: true
+    listener:
+      observation-enabled: true
+
+split:
+  kafka:
+    topico-pagamento: pagamento.liquidado.v1
+
+server:
+  port: 8081
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: ${spring.application.name}

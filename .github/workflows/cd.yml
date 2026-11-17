@@ -1,0 +1,54 @@
+name: CD
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: "21"
+          distribution: temurin
+          cache: maven
+
+      - name: Empacotar
+        run: mvn -B -DskipTests package
+
+      - name: Login no GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publicar split-service
+        uses: docker/build-push-action@v6
+        with:
+          context: ./split-service
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/split-service:${{ github.ref_name }}
+
+      - name: Publicar spi-envio-service
+        uses: docker/build-push-action@v6
+        with:
+          context: ./spi-envio-service
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/spi-envio-service:${{ github.ref_name }}
+
+      - name: Publicar spi-simulator
+        uses: docker/build-push-action@v6
+        with:
+          context: ./spi-simulator
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/spi-simulator:${{ github.ref_name }}
