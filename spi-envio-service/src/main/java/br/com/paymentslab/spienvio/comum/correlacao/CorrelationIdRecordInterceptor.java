@@ -25,7 +25,7 @@ public class CorrelationIdRecordInterceptor implements RecordInterceptor<Object,
             ConsumerRecord<Object, Object> registro,
             Consumer<Object, Object> consumidor) {
 
-        CorrelationId.definir(CorrelationId.garantir(lerCabecalho(registro)));
+        CorrelationId.definir(CorrelationId.garantir(identificadorDaTransacao(registro)));
         return registro;
     }
 
@@ -35,6 +35,21 @@ public class CorrelationIdRecordInterceptor implements RecordInterceptor<Object,
             Consumer<Object, Object> consumidor) {
 
         CorrelationId.limpar();
+    }
+
+    /**
+     * Prefere o cabecalho e, se ele nao vier, usa a chave da mensagem.
+     *
+     * <p>A chave e o EndToEndId. Ferramentas de reprocessamento que copiam
+     * apenas chave e valor perdem os cabecalhos, e sem este fallback a
+     * transacao perderia a correlacao no caminho.
+     */
+    private String identificadorDaTransacao(ConsumerRecord<Object, Object> registro) {
+        String cabecalho = lerCabecalho(registro);
+        if (cabecalho != null && !cabecalho.isBlank()) {
+            return cabecalho;
+        }
+        return registro.key() == null ? null : String.valueOf(registro.key());
     }
 
     private String lerCabecalho(ConsumerRecord<Object, Object> registro) {
