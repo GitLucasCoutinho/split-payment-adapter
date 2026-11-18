@@ -10,7 +10,7 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: "br.com.paymentslab.split"
-        spring.json.value.default.type: br.com.paymentslab.split.dominio.model.PagamentoLiquidado
+        spring.json.value.default.type: br.com.paymentslab.split.entrada.evento.PagamentoRecebido
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer

@@ -3,6 +3,8 @@ package br.com.paymentslab.split.adaptadores.entrada.mensageria;
 import br.com.paymentslab.split.dominio.model.PagamentoLiquidado;
 import br.com.paymentslab.split.dominio.model.Segregacao;
 import br.com.paymentslab.split.dominio.porta.entrada.ProcessarPagamento;
+import br.com.paymentslab.split.entrada.evento.MapeadorPagamento;
+import br.com.paymentslab.split.entrada.evento.PagamentoRecebido;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import org.slf4j.Logger;
@@ -13,8 +15,8 @@ import org.springframework.stereotype.Component;
 /**
  * Adaptador de entrada: consome o pagamento liquidado do Kafka.
  *
- * <p>As metricas ficam aqui, no adaptador, e nao no caso de uso: o nucleo nao
- * deve conhecer biblioteca de observabilidade.
+ * <p>O evento e convertido em dominio antes de qualquer regra. Evento invalido
+ * e recusado aqui, com metrica e motivo, e nao dentro do desserializador.
  */
 @Component
 public class PagamentoConsumer {
@@ -22,6 +24,7 @@ public class PagamentoConsumer {
     private static final Logger log = LoggerFactory.getLogger(PagamentoConsumer.class);
 
     private final ProcessarPagamento processarPagamento;
+    private final MapeadorPagamento mapeador = new MapeadorPagamento();
     private final MeterRegistry metricas;
 
     public PagamentoConsumer(ProcessarPagamento processarPagamento, MeterRegistry metricas) {
@@ -30,7 +33,16 @@ public class PagamentoConsumer {
     }
 
     @KafkaListener(topics = "${split.kafka.topico-pagamento}")
-    public void consumir(PagamentoLiquidado pagamento) {
+    public void consumir(PagamentoRecebido recebido) {
+        PagamentoLiquidado pagamento;
+        try {
+            pagamento = mapeador.paraDominio(recebido);
+        } catch (IllegalArgumentException erro) {
+            metricas.counter("split.pagamentos", "resultado", "recusado").increment();
+            log.warn("Pagamento recusado: {}", erro.getMessage());
+            throw erro;
+        }
+
         log.info("Pagamento recebido: endToEndId={} valor={}",
                 pagamento.endToEndId(), pagamento.valor().emReais());
 

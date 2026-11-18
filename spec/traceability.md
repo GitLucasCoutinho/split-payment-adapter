@@ -14,7 +14,7 @@ Status possíveis: **pronto** quando existe teste automatizado; **pendente** qua
 | RS-2 limite | Constitution, artigo 2 | `os_tributos_nunca_devem_passar_do_valor_bruto` | não se aplica | pronto |
 | RS-3 evento | Visão geral | `deve_publicar_evento_com_os_dados_do_pagamento` | não implementado | pronto |
 | RS-4 idempotência | Constitution, artigo 3 | não implementado | `split_duplicidade_total` | pendente |
-| RS-5 valor inválido | Constitution, artigo 1 | não implementado | `split_recusa_total` | pendente |
+| RS-5 valor inválido | Constitution, artigo 1 | `deve_recusar_evento_sem_end_to_end_id_sem_chamar_o_caso_de_uso` | `split_pagamentos_total{resultado="recusado"}` | pronto |
 
 ## spi-envio-service
 
@@ -52,8 +52,8 @@ Status possíveis: **pronto** quando existe teste automatizado; **pendente** qua
 
 ## Leitura da matriz
 
-Hoje são 22 requisitos prontos e 4 pendentes.
+Hoje são 23 requisitos prontos e 3 pendentes.
 
-Os pendentes são reais, não esquecimento: idempotência no consumidor, recusa de valor inválido, teste automatizado da mensagem morta e verificação automática de que o domínio não importa framework.
+Os pendentes são reais, não esquecimento: idempotência no consumidor, teste automatizado da mensagem morta e verificação automática de que o domínio não importa framework.
 
 Essa é a lista de trabalho que falta, e ela é derivada da spec, não de opinião.

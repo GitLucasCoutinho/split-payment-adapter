@@ -99,6 +99,7 @@ Por isso o evento carrega o estado completo. A decisão está registrada no [ADR
 ```
 src/main/java/br/com/paymentslab/split/
 ├── Application.java
+├── entrada/evento/   PagamentoRecebido, ParticipanteRecebido, MapeadorPagamento
 ├── dominio/
 │   ├── model/      ValorMonetario, Participante, PagamentoLiquidado, Segregacao
 │   ├── servico/    CalculoSegregacao (porta) e CalculoSegregacaoPadrao
@@ -113,6 +114,8 @@ src/main/java/br/com/paymentslab/split/
 │   └── saida/mensageria/     KafkaPublicador
 └── configuracao/             CasosDeUsoConfig
 ```
+
+`entrada/evento` é o modelo de borda, e `dominio/model` é o modelo de negócio. Os dois existem separados por um motivo: se o produtor mudar o formato do JSON, a mudança para no mapeador. E evento inválido é recusado ali, com motivo e métrica, em vez de estourar dentro do desserializador.
 
 A regra que faz isso ser hexagonal: **`dominio` e `aplicacao` não importam Spring nem Kafka**. O que liga o mundo externo ao caso de uso são as portas, e quem faz a ligação é o `CasosDeUsoConfig`.
 
