@@ -133,6 +133,7 @@ Isso evita o pior cenário de Kafka: uma mensagem inválida travando a partiçã
 | [Spec do spi-envio-service](spec/spi-envio-service/spec.md) | requisitos de montagem, assinatura e envio |
 | [Spec do spi-simulator](spec/spi-simulator/spec.md) | requisitos de validação e protocolo |
 | [Rastreabilidade](spec/traceability.md) | requisito, serviço, teste e métrica |
+| [Pirâmide de testes](spec/testes.md) | as cinco camadas, os números e o que falta |
 | [Decisões de arquitetura](docs/adr/) | 10 ADRs com contexto e alternativa descartada |
 | [Contexto regulatório](docs/split-payment/contexto-regulatorio.md) | base legal, cronograma, arranjos e o limite do cartão |
 | [Notas técnicas](docs/split-payment/notas-tecnicas.md) | identificadores, streaming com token, prazos e armadilhas |

@@ -48,12 +48,12 @@ Status possíveis: **pronto** quando existe teste automatizado; **pendente** qua
 | Correlação propagada | ADR-0012 | `deve_propagar_o_identificador_na_chamada_de_saida` | pronto |
 | Métrica de negócio exposta | ADR-0012 | `/actuator/prometheus` nos três serviços | pronto |
 | Erro vai para tópico de erro | ADR-0011 | validado manualmente no Docker, sem teste automatizado | pendente |
-| Domínio sem framework | Constitution, artigo 5 | revisão de imports | pendente |
+| Domínio sem framework | Constitution, artigo 5 | `o_nucleo_nao_conhece_framework` | pronto |
 
 ## Leitura da matriz
 
-Hoje são 23 requisitos prontos e 3 pendentes.
+Hoje são 24 requisitos prontos e 2 pendentes.
 
-Os pendentes são reais, não esquecimento: idempotência no consumidor, teste automatizado da mensagem morta e verificação automática de que o domínio não importa framework.
+Os pendentes são reais, não esquecimento: idempotência no consumidor e teste automatizado da mensagem morta.
 
 Essa é a lista de trabalho que falta, e ela é derivada da spec, não de opinião.
