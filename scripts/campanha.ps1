@@ -3,7 +3,7 @@
     Campanha de demonstracao com carga, falha induzida, mensagem morta e reprocessamento.
 
 .DESCRIPTION
-    Roda em quatro fases, com cerca de trinta minutos:
+    Roda em quatro fases, com cerca de quinze minutos:
 
       1. carga em pulsos, para o grafico ganhar forma
       2. falha induzida: o SPI sai do ar e as mensagens vao para a DLQ
