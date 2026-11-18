@@ -1,6 +1,10 @@
 spring:
   application:
     name: spi-envio-service
+  # Medido em docs/experimento-threads-virtuais.md: sem ganho neste perfil.
+  threads:
+    virtual:
+      enabled: false
   kafka:
     bootstrap-servers: localhost:9092
     consumer:

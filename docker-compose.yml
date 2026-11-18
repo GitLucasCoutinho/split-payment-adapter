@@ -48,6 +48,9 @@ services:
     container_name: split-spi-simulator
     ports:
       - "8083:8083"
+    # Chave do experimento de threads virtuais: VT_ENABLED=false desliga.
+    environment:
+      SPRING_THREADS_VIRTUAL_ENABLED: ${VT_ENABLED:-false}
 
   spi-envio-service:
     build: ./spi-envio-service
@@ -57,6 +60,7 @@ services:
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:19092
       SPLIT_SPI_URL: http://spi-simulator:8083/spi/mensagens
+      SPRING_THREADS_VIRTUAL_ENABLED: ${VT_ENABLED:-false}
     depends_on:
       kafka:
         condition: service_healthy
@@ -70,6 +74,7 @@ services:
       - "8081:8081"
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:19092
+      SPRING_THREADS_VIRTUAL_ENABLED: ${VT_ENABLED:-false}
     depends_on:
       kafka:
         condition: service_healthy

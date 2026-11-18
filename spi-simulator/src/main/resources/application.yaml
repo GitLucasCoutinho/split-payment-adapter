@@ -1,6 +1,10 @@
 spring:
   application:
     name: spi-simulator
+  # Medido em docs/experimento-threads-virtuais.md: sem ganho neste perfil.
+  threads:
+    virtual:
+      enabled: false
 
 server:
   port: 8083
