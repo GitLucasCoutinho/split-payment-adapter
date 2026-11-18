@@ -22,7 +22,7 @@ param(
     [int]$PausaLonga = 90
 )
 
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = "Continue"
 $arquivosCompose = @(
     "-f", (Join-Path $Repo "docker-compose.yml"),
     "-f", (Join-Path $Repo "docker-compose.observabilidade.yml")
@@ -46,7 +46,7 @@ function Aguarda([int]$segundos) {
 }
 
 function ContaTopico([string]$topico) {
-    $saida = docker exec split-kafka /opt/kafka/bin/kafka-get-offsets.sh --bootstrap-server localhost:19092 --topic $topico 2>&1
+    $saida = docker exec split-kafka /opt/kafka/bin/kafka-get-offsets.sh --bootstrap-server localhost:19092 --topic $topico 2>$null
     $soma = 0
     foreach ($linha in $saida) {
         if ("$linha" -match ':(\d+)\s*$') { $soma += [int]$Matches[1] }
@@ -87,7 +87,7 @@ foreach ($pulso in @(
 
 # ---------------------------------------------------------------- fase 2
 Escreve "fase 2 de 4: derrubando o SPI para gerar mensagem morta"
-docker compose @arquivosCompose stop spi-simulator 2>&1 | Out-Null
+docker compose @arquivosCompose stop spi-simulator 2>$null | Out-Null
 Aguarda 5
 
 $publicadosComFalha = Carga 2 10
@@ -100,7 +100,7 @@ $naDlq = ContaTopico $topicoErro
 Escreve "  mensagens na DLQ: $naDlq"
 
 Escreve "fase 3 de 4: religando o SPI"
-docker compose @arquivosCompose start spi-simulator 2>&1 | Out-Null
+docker compose @arquivosCompose start spi-simulator 2>$null | Out-Null
 Aguarda 40
 
 # ---------------------------------------------------------------- fase 3
