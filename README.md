@@ -127,20 +127,7 @@ Isso evita o pior cenário de Kafka: uma mensagem inválida travando a partiçã
 
 **71 testes em cinco camadas.** A forma é proposital: o que é barato roda em todo build, e o que é caro roda só onde o risco justifica.
 
-```
-                        ▲
-                       ╱ ╲   ponta a ponta        0
-                      ╱   ╲  (manual, no Docker)
-                     ╱─────╲
-                    ╱       ╲  integração          5
-                   ╱─────────╲
-                  ╱           ╲  contrato (XSD)     11
-                 ╱─────────────╲
-                ╱               ╲  arquitetura      2
-               ╱─────────────────╲
-              ╱                   ╲  unidade          53
-             ╱─────────────────────╲
-```
+![Pirâmide de testes: 71 testes em cinco camadas](docs/imagens/piramide-testes.png)
 
 | Camada | Testes | O que prova | Onde |
 |---|---|---|---|
