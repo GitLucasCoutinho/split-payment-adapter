@@ -127,13 +127,13 @@ Isso evita o pior cenário de Kafka: uma mensagem inválida travando a partiçã
 
 ## Testes
 
-**71 testes em cinco camadas.** A forma é proposital: o que é barato roda em todo build, e o que é caro roda só onde o risco justifica.
+**72 testes em cinco camadas.** A forma é proposital: o que é barato roda em todo build, e o que é caro roda só onde o risco justifica.
 
-![Pirâmide de testes: 71 testes em cinco camadas](docs/imagens/piramide-testes.png)
+![Pirâmide de testes: 72 testes em cinco camadas](docs/imagens/piramide-testes.png)
 
 | Camada | Testes | O que prova | Onde |
 |---|---|---|---|
-| Unidade | 53 | a regra de negócio pura, sem framework e sem rede | modelos, cálculo, mapeadores, gerador de carga |
+| Unidade | 54 | a regra de negócio pura, sem framework e sem rede | modelos, cálculo, mapeadores, gerador de carga |
 | Contrato | 11 | a mensagem contra o **XSD oficial do Banco Central** | `Pacs008Codec`, `Pacs008Mapper`, `ValidadorPacs008` |
 | Integração | 5 | o wiring: contexto, `MockMvc` e `MockRestServiceServer` | `ApplicationContextTest`, `SimuladorControllerTest`, `EnviadorHttpTest` |
 | Arquitetura | 2 | a dependência aponta para dentro e o núcleo não importa framework | `ArquiteturaTest` com ArchUnit |
@@ -144,7 +144,7 @@ A camada de contrato é a que pega o erro caro. Um campo fora do formato ou uma 
 A camada de arquitetura era revisão manual. Virou teste: importar Spring dentro de `dominio` quebra o build.
 
 ```bash
-mvn test      # 71 testes, sem Docker e sem broker
+mvn test      # 72 testes, sem Docker e sem broker
 mvn verify    # o mesmo, mais o gate de cobertura
 ```
 

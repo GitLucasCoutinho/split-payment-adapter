@@ -4,11 +4,11 @@ A estratégia é simples: **o teste mais barato possível para provar cada coisa
 
 ## Os números
 
-Total: **71 testes** em 4 módulos.
+Total: **72 testes** em 4 módulos.
 
 | Camada | Quantidade | Fatia | Roda em |
 |---|---|---|---|
-| Unidade | 53 | 75% | milissegundos |
+| Unidade | 54 | 75% | milissegundos |
 | Contrato (XSD oficial) | 11 | 15% | segundos |
 | Integração | 5 | 7% | segundos |
 | Arquitetura | 2 | 3% | milissegundos |
@@ -102,7 +102,7 @@ Isso está no `docs/demonstracao.md`. Automatizar exigiria Testcontainers subind
 ## Como rodar
 
 ```bash
-mvn test        # 71 testes, sem Docker e sem broker
+mvn test        # 72 testes, sem Docker e sem broker
 mvn verify      # o mesmo, mais o gate de cobertura
 ```
 
