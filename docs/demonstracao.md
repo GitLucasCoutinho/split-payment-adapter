@@ -53,15 +53,30 @@ docker logs split-split-service --since 2m
 
 ## Passo 2: seguir a transação
 
-**No Kibana**, filtro:
+**Abra** o dashboard: `http://localhost:5601/app/dashboards` e escolha **Split Payment**.
+
+Ele já vem com o período fixado em 24 horas e quatro painéis, na ordem do fluxo:
+
+| Painel | O que mostra |
+|---|---|
+| 1. Cálculo da segregação | linhas do `split-service` |
+| 2. Envio ao SPI | linhas do `spi-envio-service`, com o `correlationId` |
+| 3. Aceites do simulador | linhas do `spi-simulator` |
+| 4. Erros e avisos | deve estar zerado |
+
+**Mostre** o mesmo `correlationId` aparecendo nos painéis 2 e 3.
+
+> "O identificador da transação é a chave da mensagem no Kafka, e viaja no contexto de log até a chamada HTTP. Por isso o mesmo valor aparece nas duas pontas."
+
+### Se quiser ver os três serviços na mesma busca
+
+Abra o Discover e busque o identificador como texto livre, sem nome de campo:
 
 ```
-correlationId: "E9999901020261117210000000000001"
+E9999901020261118014200000000005
 ```
 
-**Mostre** as três linhas: cálculo, envio, aceite.
-
-> "O E2EID é a chave da mensagem no Kafka, e ele viaja como correlacao até a chamada HTTP. Por isso uma busca por ele mostra a transação inteira."
+A busca por campo `correlationId` traz só o envio, porque o `split-service` e o simulador ainda não têm o interceptor que preenche esse campo.
 
 ---
 

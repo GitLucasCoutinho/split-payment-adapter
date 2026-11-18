@@ -119,7 +119,9 @@ No Kibana, filtre por `correlationId` e você vê a transação inteira: o cálc
 
 ## Tratamento de erro
 
-Cada consumidor reprocessa a mensagem algumas vezes. Se continuar falhando, ela vai para `<tópico>-dlt`, preservando chave e correlação.
+Cada consumidor reprocessa a mensagem algumas vezes. Se continuar falhando, ela vai para `<tópico>-dlt`, preservando chave, correlação e a causa da falha.
+
+O padrão é conhecido como **dead letter queue**, fila de mensagem morta. No Kafka ele ganha outro nome, **dead letter topic**, tópico de mensagem morta, porque o Kafka não tem fila, tem tópico. É por isso que o sufixo é `-dlt` e não `-dlq`.
 
 Isso evita o pior cenário de Kafka: uma mensagem inválida travando a partição para sempre. A decisão e os limites estão no [ADR-0011](docs/adr/0011-mensagem-morta-em-topico-de-erro.md).
 
