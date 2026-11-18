@@ -58,6 +58,20 @@ Essa distinção importa: o que roda hoje é a perna de pagamento mais o cálcul
 
 ```bash
 mvn -DskipTests package
+docker compose -f docker-compose.yml -f docker-compose.observabilidade.yml up -d --build
+```
+
+Esse comando sobe o núcleo (Kafka, os três serviços e o gerador de carga) junto com a pilha de observabilidade (Elasticsearch, Logstash e Kibana).
+
+Depois de reiniciar a máquina, o mesmo comando sem `--build`:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.observabilidade.yml up -d
+```
+
+Se quiser só o núcleo, sem a observabilidade:
+
+```bash
 docker compose up -d --build
 ```
 
@@ -70,11 +84,7 @@ Depois:
 | `http://localhost:8082/actuator/health` | spi-envio-service |
 | `http://localhost:8083/actuator/health` | spi-simulator |
 
-Com observabilidade, sobe também Elasticsearch, Logstash e Kibana:
-
-```bash
-docker compose -f docker-compose.yml -f docker-compose.observabilidade.yml up -d
-```
+Com a observabilidade no ar, os endereços extras são:
 
 | Endereço | O que é |
 |---|---|
