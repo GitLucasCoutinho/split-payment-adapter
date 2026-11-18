@@ -95,6 +95,8 @@ Ou, mais simples, abra o tópico no Kafka UI.
 
 > "Três tentativas e a mensagem vai para o tópico de erro, com chave e correlação. Sem isso, uma mensagem inválida trava a partição e o fluxo inteiro para."
 
+Medido: com o simulador fora, **30 mensagens publicadas, 22 se recuperaram** quando ele voltou dentro da janela de tentativas, e **7 foram para a DLQ**. É o comportamento esperado: falha parcial, sem perder nada em silêncio.
+
 Depois religue:
 
 ```bash
@@ -106,12 +108,24 @@ docker start split-spi-simulator
 ## Passo 5: volume
 
 ```bash
-curl -X POST "http://localhost:8084/carga?taxa=30&segundos=10"
+curl -X POST "http://localhost:8084/carga?taxa=100&segundos=10"
 ```
 
 **Mostre** o Kafka UI, aba de consumer groups, e o lag.
 
-> "O cálculo acompanha trinta por segundo com lag zero. O envio faz cerca de um vírgula seis por segundo, porque cada mensagem custa seiscentos milissegundos entre montar, assinar, validar e enviar. O gargalo está medido, não estimado."
+> "Neste teste a fila ficou zerada em todos os degraus. O cálculo acompanha em tempo real, e o envio drena a fila a cerca de cento e trinta mensagens por segundo. O limite não foi a máquina: com seis mil cento e quarenta e cinco mensagens em dez segundos, o processador chegou a setenta e dois por cento e a memória nem se moveu."
+
+Tabela medida nesta máquina:
+
+| Oferta | Publicados | Calculados | Enviados | Lag | CPU pico |
+|---|---|---|---|---|---|
+| 30 por segundo | 294 | 294 | 294 | 0 | 21% |
+| 100 por segundo | 913 | 913 | 913 | 0 | 29% |
+| 200 por segundo | 1.613 | 1.613 | 1.613 | 0 | 54% |
+| 400 por segundo | 3.480 | 3.480 | 3.480 | 0 | 65% |
+| 800 por segundo | 6.145 | 6.145 | 6.145 | 0 | 72% |
+
+Zero duplicata, zero recusa, zero mensagem morta. A máquina de doze núcleos e trinta e dois gigabytes nunca foi o gargalo.
 
 ---
 
