@@ -30,22 +30,9 @@ A unidade de deploy é o **fluxo**, não o tipo de mensagem. O `spi-envio-servic
 
 ## Como funciona
 
-```
-Kafka UI (8090)
-   │ publica o pagamento liquidado
-   ▼
-pagamento.liquidado.v1
-   ▼
-[split-service 8081]      IBS e CBS, truncados para baixo
-   ▼
-segregacao.calculada.v1
-   ▼
-[spi-envio-service 8082]    mapeia, assina, valida contra o XSD
-   ▼
-POST /spi/mensagens
-   ▼
-[spi-simulator 8083]      valida, recusa duplicata, protocola
-```
+![Fluxo completo: do simulador de transações ao aceite do SPI](docs/imagens/fluxo-completo.png)
+
+Duas setas são tópicos do Kafka e uma é chamada HTTP. Se o envio falhar três vezes, a mensagem sai do fluxo e vai para a fila de erro, com payload e correlação.
 
 ## O que está implementado e o que não está
 
