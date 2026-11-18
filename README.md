@@ -123,6 +123,44 @@ Cada consumidor reprocessa a mensagem algumas vezes. Se continuar falhando, ela 
 
 Isso evita o pior cenário de Kafka: uma mensagem inválida travando a partição para sempre. A decisão e os limites estão no [ADR-0011](docs/adr/0011-mensagem-morta-em-topico-de-erro.md).
 
+## Testes
+
+**71 testes em cinco camadas.** A forma é proposital: o que é barato roda em todo build, e o que é caro roda só onde o risco justifica.
+
+```
+                        ▲
+                       ╱ ╲   ponta a ponta        0
+                      ╱   ╲  (manual, no Docker)
+                     ╱─────╲
+                    ╱       ╲  integração          5
+                   ╱─────────╲
+                  ╱           ╲  contrato (XSD)     11
+                 ╱─────────────╲
+                ╱               ╲  arquitetura      2
+               ╱─────────────────╲
+              ╱                   ╲  unidade          53
+             ╱─────────────────────╲
+```
+
+| Camada | Testes | O que prova | Onde |
+|---|---|---|---|
+| Unidade | 53 | a regra de negócio pura, sem framework e sem rede | modelos, cálculo, mapeadores, gerador de carga |
+| Contrato | 11 | a mensagem contra o **XSD oficial do Banco Central** | `Pacs008Codec`, `Pacs008Mapper`, `ValidadorPacs008` |
+| Integração | 5 | o wiring: contexto, `MockMvc` e `MockRestServiceServer` | `ApplicationContextTest`, `SimuladorControllerTest`, `EnviadorHttpTest` |
+| Arquitetura | 2 | a dependência aponta para dentro e o núcleo não importa framework | `ArquiteturaTest` com ArchUnit |
+| Ponta a ponta | 0 | o ciclo completo, hoje à mão no Docker | `docs/demonstracao.md` |
+
+A camada de contrato é a que pega o erro caro. Um campo fora do formato ou uma assinatura fora do perfil do SPI só aparece quando o Banco Central recusa. Aqui aparece no build. Foi ela que descobriu um EndToEndId de 30 caracteres onde o schema exige 32.
+
+A camada de arquitetura era revisão manual. Virou teste: importar Spring dentro de `dominio` quebra o build.
+
+```bash
+mvn test      # 71 testes, sem Docker e sem broker
+mvn verify    # o mesmo, mais o gate de cobertura
+```
+
+O detalhamento de cada camada e o que ainda falta estão em [spec/testes.md](spec/testes.md).
+
 ## Documentação
 
 | Documento | Conteúdo |
@@ -134,6 +172,7 @@ Isso evita o pior cenário de Kafka: uma mensagem inválida travando a partiçã
 | [Spec do spi-simulator](spec/spi-simulator/spec.md) | requisitos de validação e protocolo |
 | [Rastreabilidade](spec/traceability.md) | requisito, serviço, teste e métrica |
 | [Pirâmide de testes](spec/testes.md) | as cinco camadas, os números e o que falta |
+| [Roteiro de demonstração](docs/demonstracao.md) | cinco minutos, passo a passo, com a frase de cada tela |
 | [Decisões de arquitetura](docs/adr/) | 10 ADRs com contexto e alternativa descartada |
 | [Contexto regulatório](docs/split-payment/contexto-regulatorio.md) | base legal, cronograma, arranjos e o limite do cartão |
 | [Notas técnicas](docs/split-payment/notas-tecnicas.md) | identificadores, streaming com token, prazos e armadilhas |
